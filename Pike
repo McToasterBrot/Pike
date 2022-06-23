@@ -1,0 +1,73 @@
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.JSplitPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+public class Gui 
+
+{
+    GuiSpiel guiSpiel;
+    GuiHighscore guiHighscore;
+    JFrame frame;
+    JPanel back;
+    JSplitPane splitter;
+    int counter;
+    public Gui() 
+    {
+
+        this.FensterLinksundRechts();
+        this.Fenstereinstellungen();
+
+    
+        counter = 0;
+    }
+
+    public void Fenstereinstellungen(){
+        frame = new JFrame("Pike");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize( 1000,600);
+        frame.setResizable(false);
+        frame.add(back);
+        frame.setVisible(true);
+    }
+
+    public void FensterLinksundRechts(){
+        guiSpiel = new GuiSpiel();
+        guiSpiel.listenerAnmelden(new ButtonListenerSpiel());
+        guiHighscore = new GuiHighscore();
+        guiHighscore.listenerAnmelden(new ButtonListenerStart());
+        splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, guiHighscore,guiSpiel );
+        splitter.setEnabled(false);
+        splitter.setResizeWeight(0.3);
+        splitter.setDividerSize(1);
+        back = new JPanel();
+        back.setBackground(Color.RED);
+        back.setLayout(new BorderLayout());
+        back.add(splitter, BorderLayout.CENTER);
+    }
+    class ButtonListenerSpiel implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            for(int i = 0;i<7;i++){
+                for(int x = 0;x<7;x++){
+                    guiSpiel.jb[i][x].setVisible(false);
+
+                }
+            }
+            int x = (int)(Math.random()*7);
+            int y = (int)(Math.random()*7);
+            guiSpiel.jb[x][y].setVisible(true);
+            counter++;
+            guiHighscore.Countersetzen(counter);
+
+        }
+    }
+    class ButtonListenerStart implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            guiHighscore.start.setText("Läuft...");
+            guiSpiel.jb[4][3].setVisible(true);
+            guiHighscore.t.running=true;
+            guiHighscore.t.run();
+        }
+    }
+
+}
